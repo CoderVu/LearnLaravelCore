@@ -19,16 +19,16 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($users as $user)
+                @foreach($users as $userData)
                 <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->created_at->format('d/m/Y') }}</td>
+                    <td>{{ $userData['id'] }}</td>
+                    <td>{{ $userData['name'] }}</td>
+                    <td>{{ $userData['email'] }}</td>
+                    <td>{{ $userData['created_at'] }}</td>
                     <td>
-                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info">View</a>
-                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                        <a href="{{ route('users.show', $userData['original']->id) }}" class="btn btn-sm btn-info">View</a>
+                        <a href="{{ route('users.edit', $userData['original']->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ route('users.destroy', $userData['original']->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>

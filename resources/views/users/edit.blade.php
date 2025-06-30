@@ -24,7 +24,13 @@
                     
                     <div class="mb-3">
                         <label for="password" class="form-label">Password (leave blank to keep current)</label>
-                        <input type="password" class="form-control" id="password" name="password">
+                        <input type="password" class="form-control" id="password" name="password" minlength="6">
+                        <div class="form-text">Leave blank to keep current password. If changing, must be at least 6 characters.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
                     </div>
                     
                     <div class="d-flex gap-2">

@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\UserRepositoryInterface;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    protected $userRepo;
+    protected $userService;
 
-    public function __construct(UserRepositoryInterface $userRepo)
+    public function __construct(UserService $userService)
     {
-        $this->userRepo = $userRepo;
+        $this->userService = $userService;
     }
 
     public function index()
     {
-        $users = $this->userRepo->all();
+        $users = $this->userService->getUsersForTable();
         return view('users.index', compact('users'));
     }
 
@@ -31,25 +30,22 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|confirmed',
         ]);
 
-        $data = $request->all();
-        $data['password'] = Hash::make($data['password']);
-        
-        $this->userRepo->create($data);
+        $this->userService->createUser($request->all());
         return redirect()->route('users.index')->with('success', 'User created successfully!');
     }
 
     public function show($id)
     {
-        $user = $this->userRepo->find($id);
+        $user = $this->userService->findUser($id);
         return view('users.show', compact('user'));
     }
 
     public function edit($id)
     {
-        $user = $this->userRepo->find($id);
+        $user = $this->userService->findUser($id);
         return view('users.edit', compact('user'));
     }
 
@@ -58,22 +54,16 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
-        $data = $request->all();
-        if ($request->password) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password']);
-        }
-
-        $this->userRepo->update($id, $data);
+        $this->userService->updateUser($id, $request->all());
         return redirect()->route('users.index')->with('success', 'User updated successfully!');
     }
 
     public function destroy($id)
     {
-        $this->userRepo->delete($id);
+        $this->userService->deleteUser($id);
         return redirect()->route('users.index')->with('success', 'User deleted successfully!');
     }
 }
